@@ -1,0 +1,13 @@
+name: laptime-sim
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - matplotlib=3.2.1
+  - numpy=1.18.1
+  - quadprog=0.1.7
+  - pip
+  - pip:
+      - trajectory_planning_helpers==0.66
+      - utm==0.5.0
+      - pytest==5.4.3

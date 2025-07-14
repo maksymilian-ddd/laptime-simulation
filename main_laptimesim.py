@@ -51,7 +51,7 @@ def main(track_opts: dict,
             line = fh.readline()
 
     # check dependencies
-    pkg_resources.require(dependencies)
+    # pkg_resources.require(dependencies)
 
     # ------------------------------------------------------------------------------------------------------------------
     # INITIALIZATION ---------------------------------------------------------------------------------------------------
@@ -358,7 +358,7 @@ if __name__ == '__main__':
     # use_drs2:             DRS zone 2 switch
     # use_pit:              activate pit stop (requires _pit track file!)
 
-    track_opts_ = {"trackname": "Shanghai",
+    track_opts_ = {"trackname": "SlovakiaRing",
                    "flip_track": False,
                    "mu_weather": 1.0,
                    "interp_stepsize_des": 5.0,
@@ -431,7 +431,7 @@ if __name__ == '__main__':
     # use_print:                set if prints to console should be used or not (does not suppress hints/warnings)
     # use_print_result:         set if result should be printed to console or not
 
-    debug_opts_ = {"use_plot": False,
+    debug_opts_ = {"use_plot": True,
                    "use_debug_plots": False,
                    "use_plot_comparison_tph": False,
                    "use_print": True,

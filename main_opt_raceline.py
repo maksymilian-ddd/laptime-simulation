@@ -48,7 +48,7 @@ def main(track_pars: dict,
             line = fh.readline()
 
     # check dependencies
-    pkg_resources.require(dependencies)
+    # pkg_resources.require(dependencies)
 
     # ------------------------------------------------------------------------------------------------------------------
     # CHECK USER INPUT -------------------------------------------------------------------------------------------------
@@ -310,11 +310,15 @@ if __name__ == '__main__':
     #   -> file type is chosen by the "mode" option in the import options below
     #   -> if the track widths are supplied in the file (.csv) the track_width option here is ignored
 
+    track_pars_ = {"location": "SlovakiaRing",
+                   "track_length": 5922.0,
+                   "track_width": 12.0}
+
     # F1 ---------------------------------------------------------------------------------------------------------------
 
-    track_pars_ = {"location": "Austin",
-                   "track_length": 5513.0,
-                   "track_width": None}
+    # track_pars_ = {"location": "Austin",
+    #                "track_length": 5513.0,
+    #                "track_width": None}
 
     # track_pars_ = {"location": "Budapest",
     #                "track_length": 4381.0,
@@ -429,7 +433,7 @@ if __name__ == '__main__':
     # new_start:        [x_m, y_m] coordinates of new starting point
     # plot_track:       plot imported as well as smoothed track
 
-    imp_opts_ = {"mode": "track",
+    imp_opts_ = {"mode": "centerline",
                  "flip_imp_track": False,
                  "set_new_start": True,
                  "new_start": [0.0, 0.0],
@@ -440,7 +444,7 @@ if __name__ == '__main__':
     # s_reg:    [-] smoothing factor -> range [1.0, 100.0] (play a little bit)
 
     reg_smooth_opts_ = {"k_reg": 3,
-                        "s_reg": 40.0}
+                        "s_reg": 80.0}
 
     # set stepsizes used during optimization ---------------------------------------------------------------------------
     # stepsize_prep:                [m] used for linear interpolation before spline approximation
