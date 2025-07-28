@@ -3,6 +3,7 @@ import math
 import matplotlib.pyplot as plt
 from laptimesim.src.track import Track
 from laptimesim.src.driver import Driver
+import csv
 
 
 class Lap(object):
@@ -834,6 +835,13 @@ class Lap(object):
         plt.xlabel("distance in m")
         plt.ylabel("velocity in km/h")
         plt.grid()
+
+        # export velocity profile to CSV
+        with open("velocity_profile.csv", "w", newline="") as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(["distance_m", "velocity_kmh"])
+            for dist, vel in zip(self.trackobj.dists_cl, self.vel_cl * 3.6):
+                writer.writerow([dist, vel])
 
         # plot global title
         title = "lap time: %.3f s" % self.t_cl[-1]

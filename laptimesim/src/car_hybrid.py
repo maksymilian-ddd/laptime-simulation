@@ -97,21 +97,49 @@ class CarHybrid(Car):
         n_begin = self.pars_engine["n_begin"]
         n_end = self.pars_engine["n_end"]
 
+        
+
+        # calculate power
+        # p_eng = (self.z_pow_engine[0] * np.power(n_use, 3) + self.z_pow_engine[1] * np.power(n_use, 2)
+        #          + self.z_pow_engine[2] * n_use + self.z_pow_engine[3])
+        # p_eng[p_eng < 0.0] = 0.0  # assure that no negativ powers appear
+
+        # power curve method:
+        p_eng = np.array([ 10.        ,  10.        ,  10.        ,
+        10.        ,  10.        ,  10.        ,  10.        ,
+        10.        ,  10.        ,  10.        ,  10.        ,
+        10.        ,  10.        ,  10.        ,  10.        ,
+        10.        ,  10.        ,  10.        ,  10.        ,
+        41.88790205,  46.51651522,  51.1451284 ,  54.47521662,
+        57.80530483,  59.94158783,  62.07787083,  64.46548125,
+        66.85309167,  69.55486135,  72.25663103,  75.50294344,
+        78.74925585,  82.10028801,  85.45132018,  90.79202769,
+        96.1327352 ,  99.39999155, 102.6672479 , 105.7878966 ,
+       108.9085453 , 112.0710819 , 115.2336185 , 118.20765955,
+       121.1817006 , 123.93583015, 126.6899597 , 128.1874522 ,
+       129.6849447 , 133.69571135, 137.706478  , 142.3665071 ,
+       147.0265362 , 150.41945625, 153.8123763 , 156.95396895,
+       160.0955616 , 159.61385075, 159.1321399 , 157.47756775,
+       155.8229956 , 152.5766832 , 149.3303708 , 145.70706725,
+       142.0837637 , 139.12019465, 136.1566256 , 130.3865671 ,
+       124.6165086 ]) * 1000
+        
         # limit engine speed to valid range of power curve
         n_use = np.copy(n)
         n_use[n_use < 0.75 * n_begin] = 0.75 * n_begin
         n_use[n_use > 1.2 * n_end] = 1.2 * n_end
 
-        # calculate power
-        p_eng = (self.z_pow_engine[0] * np.power(n_use, 3) + self.z_pow_engine[1] * np.power(n_use, 2)
-                 + self.z_pow_engine[2] * n_use + self.z_pow_engine[3])
-        p_eng[p_eng < 0.0] = 0.0  # assure that no negativ powers appear
+        # crop p_eng to match the valid range of n_use
+        # assume p_eng is sampled at the same points as n_range in plot_power_engine
+        # so, interpolate p_eng for the given n_use
+        n_range = np.linspace(0.0, 6900.0, len(p_eng)) / 60.0  # [1/s]
+        p_eng = np.interp(n_use, n_range, p_eng)
 
         return p_eng
 
     def plot_power_engine(self) -> None:
         # plot
-        n_range = np.arange(7000.0, 15100.0, 100.0) / 60.0  # [1/s]
+        n_range = np.arange(0.0, 6900.0, 100.0) / 60.0  # [1/s]
 
         plt.figure()
         plt.plot(n_range * 60.0, self.__power_engine(n=n_range) / 1000.0 * 1.36)

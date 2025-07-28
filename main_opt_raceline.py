@@ -444,14 +444,14 @@ if __name__ == '__main__':
     # s_reg:    [-] smoothing factor -> range [1.0, 100.0] (play a little bit)
 
     reg_smooth_opts_ = {"k_reg": 3,
-                        "s_reg": 80.0}
+                        "s_reg": 200.0}
 
     # set stepsizes used during optimization ---------------------------------------------------------------------------
     # stepsize_prep:                [m] used for linear interpolation before spline approximation
     # stepsize_reg:                 [m] used for spline interpolation after spline approximation (stepsize during opt.)
     # stepsize_interp_after_opt:    [m] used for spline interpolation after optimization
 
-    stepsize_opts_ = {"stepsize_prep": 2.0,
+    stepsize_opts_ = {"stepsize_prep": 5.0,
                       "stepsize_reg": 5.0,
                       "stepsize_interp_after_opt": 5.0}
 
@@ -464,7 +464,7 @@ if __name__ == '__main__':
     optim_opts_mincurv_ = {"width_opt": 1.5,
                            "curvlim": 0.12,
                            "iqp_iters_min": 3,
-                           "iqp_curverror_allowed": 0.01}
+                           "iqp_curverror_allowed": 0.0005}
 
     # ------------------------------------------------------------------------------------------------------------------
     # SIMULATION CALL --------------------------------------------------------------------------------------------------
