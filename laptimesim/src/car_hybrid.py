@@ -122,7 +122,7 @@ class CarHybrid(Car):
        160.0955616 , 159.61385075, 159.1321399 , 157.47756775,
        155.8229956 , 152.5766832 , 149.3303708 , 145.70706725,
        142.0837637 , 139.12019465, 136.1566256 , 130.3865671 ,
-       124.6165086 ]) * 1000
+       124.6165086 ]) * 1000 * 0.977 # the last term is power correction for temperature/pressure change
         
         # limit engine speed to valid range of power curve
         n_use = np.copy(n)
