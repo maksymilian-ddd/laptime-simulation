@@ -1,4 +1,4 @@
-numpy==1.26.4
+numpy==1.18.1
 matplotlib==3.2.1
 trajectory_planning_helpers
 utm==0.5.0

@@ -358,7 +358,7 @@ if __name__ == '__main__':
     # use_drs2:             DRS zone 2 switch
     # use_pit:              activate pit stop (requires _pit track file!)
 
-    track_opts_ = {"trackname": "SlovakiaRing",
+    track_opts_ = {"trackname": "SlovakiaRingGPS",
                    "flip_track": False,
                    "mu_weather": 1.0,
                    "interp_stepsize_des": 1.0,
@@ -420,7 +420,7 @@ if __name__ == '__main__':
     # range_2:  range of parameter variation [start, end, number of steps] -> CURRENTLY NOT IMPLEMENTED
 
     sa_opts_ = {"use_sa": False,
-                "sa_type": "mass",
+                "sa_tyzpe": "mass",
                 "range_1": [733.0, 833.0, 5],
                 "range_2": None}
 
@@ -446,3 +446,54 @@ if __name__ == '__main__':
          driver_opts=driver_opts_,
          sa_opts=sa_opts_,
          debug_opts=debug_opts_)
+    
+    if debug_opts_['use_debug_plots'] == True:
+        velprofile_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "velocity_profile.csv")
+        comparison_velprofile_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "velocity_profile_irl.csv")
+
+        # Load data from CSV files
+        data1 = np.loadtxt(velprofile_path, delimiter=",", skiprows=1)
+        data2 = np.loadtxt(comparison_velprofile_path, delimiter=",", skiprows=1)
+
+        # Convert speed to m/s if needed (assume it's already in m/s, but if in km/h, uncomment below)
+        data1[:, 1] = data1[:, 1] / 3.6
+        data2[:, 1] = data2[:, 1] / 3.6
+
+        # Calculate time deltas using dt = ds / v (avoid division by zero)
+        v1 = data1[:, 1]
+        ds1 = np.diff(data1[:, 0])
+        v1_mid = (v1[:-1] + v1[1:]) / 2
+        dt1 = np.where(v1_mid != 0, ds1 / v1_mid, 0.0)
+        # Calculate acceleration: a = dv / dt
+        dv1 = np.diff(v1)
+        acc1 = np.where(dt1 != 0, dv1 / dt1, 0.0)
+
+        v2 = data2[:, 1]
+        ds2 = np.diff(data2[:, 0])
+        v2_mid = (v2[:-1] + v2[1:]) / 2
+        dt2 = np.where(v2_mid != 0, ds2 / v2_mid, 0.0)
+        dv2 = np.diff(v2)
+        acc2 = np.where(dt2 != 0, dv2 / dt2, 0.0)
+
+        # Create a figure with two subplots (velocity and acceleration)
+        fig, axs = plt.subplots(2, 1, figsize=(10, 8), sharex=True)
+
+        # Plot velocity profiles
+        axs[0].plot(data1[:, 0], data1[:, 1]*3.6, label='Simulation')
+        axs[0].plot(data2[:, 0], data2[:, 1]*3.6, label='Real Life')
+        axs[0].set_ylabel('Velocity [km/h]')
+        axs[0].set_title('Velocity')
+        axs[0].legend()
+        axs[0].grid()
+
+        # Plot longitudinal acceleration profiles
+        axs[1].plot(data1[1:, 0], acc1, label='Simulation')
+        axs[1].plot(data2[1:, 0], acc2, label='Real Life')
+        axs[1].set_xlabel('Distance [m]')
+        axs[1].set_ylabel('Longitudinal Acceleration [m/s²]')
+        axs[1].set_title('Longitudinal Acceleration')
+        axs[1].legend()
+        axs[1].grid()
+
+        plt.tight_layout()
+        plt.show()
