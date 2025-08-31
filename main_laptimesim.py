@@ -379,7 +379,7 @@ if __name__ == '__main__':
 
     solver_opts_ = {"vehicle": "BMW_E36.ini",
                     "series": "F1",
-                    "limit_braking_weak_side": None,
+                    "limit_braking_weak_side": 'all',
                     "v_start": 200.0 / 3.6,
                     "find_v_start": True,
                     "max_no_em_iters": 5,
@@ -475,8 +475,16 @@ if __name__ == '__main__':
         dv2 = np.diff(v2)
         acc2 = np.where(dt2 != 0, dv2 / dt2, 0.0)
 
-        # Create a figure with two subplots (velocity and acceleration)
-        fig, axs = plt.subplots(2, 1, figsize=(10, 8), sharex=True)
+        # Filter the longitudinal acceleration signals using a moving average
+        def moving_average(x, w):
+            return np.convolve(x, np.ones(w)/w, mode='same')
+
+        window_size = 30  # Adjust as needed
+        acc1 = moving_average(acc1, window_size)
+        acc2 = moving_average(acc2, window_size)
+
+        # Create a figure with three subplots (velocity, longitudinal acceleration, lateral acceleration)
+        fig, axs = plt.subplots(3, 1, figsize=(10, 12), sharex=True)
 
         # Plot velocity profiles
         axs[0].plot(data1[:, 0], data1[:, 1]*3.6, label='Simulation')
@@ -489,11 +497,19 @@ if __name__ == '__main__':
         # Plot longitudinal acceleration profiles
         axs[1].plot(data1[1:, 0], acc1, label='Simulation')
         axs[1].plot(data2[1:, 0], acc2, label='Real Life')
-        axs[1].set_xlabel('Distance [m]')
         axs[1].set_ylabel('Longitudinal Acceleration [m/s²]')
         axs[1].set_title('Longitudinal Acceleration')
         axs[1].legend()
         axs[1].grid()
+
+        # Plot lateral acceleration profiles (third column)
+        axs[2].plot(data1[:, 0], data1[:, 2], label='Simulation')
+        axs[2].plot(data2[:, 0], data2[:, 2], label='Real Life')
+        axs[2].set_xlabel('Distance [m]')
+        axs[2].set_ylabel('Lateral Acceleration [m/s²]')
+        axs[2].set_title('Lateral Acceleration')
+        axs[2].legend()
+        axs[2].grid()
 
         plt.tight_layout()
         plt.show()

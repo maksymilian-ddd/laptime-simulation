@@ -837,11 +837,12 @@ class Lap(object):
         plt.grid()
 
         # export velocity profile to CSV
+        a_y_tmp = np.power(self.vel_cl[:-1], 2) * self.trackobj.kappa
         with open("velocity_profile.csv", "w", newline="") as csvfile:
             writer = csv.writer(csvfile)
-            writer.writerow(["distance_m", "velocity_kmh"])
-            for dist, vel in zip(self.trackobj.dists_cl, self.vel_cl * 3.6):
-                writer.writerow([dist, vel])
+            writer.writerow(["distance_m", "velocity_kmh", "lateral_acc"])
+            for dist, vel, lat_acc in zip(self.trackobj.dists_cl, self.vel_cl * 3.6, a_y_tmp):
+                writer.writerow([dist, vel, lat_acc])
 
         # plot global title
         title = "lap time: %.3f s" % self.t_cl[-1]
